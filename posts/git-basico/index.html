@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Básica de Git para Principiantes | Mi Blog de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #1a1a1a;
+      --text: #e0e0e0;
+      --text2: #a0a0a0;
+      --accent: #4a9eff;
+      --accent-hover: #66b3ff;
+      --border: #404040;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+    }
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(74, 158, 255, 0.1);
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      width: 250px;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--border);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .footer-section p,
+    .footer-section a {
+      color: var(--text2);
+      text-decoration: none;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="/DoradoWeb-HTML/images/foto_perfil.jpeg" alt="josemaridorado02">
+        <h1>Mi Blog de Informática</h1>
+      </div>
+      <nav>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </nav>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar artículos...">
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    
+<style>
+  article {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  article h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  article small {
+    color: #999;
+    font-size: 0.95rem;
+  }
+  article > div {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  article h2 { 
+    font-size: 2rem; 
+    color: #4a9eff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  article h3 { 
+    font-size: 1.6rem; 
+    color: #4a9eff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  article h4 { 
+    font-size: 1.3rem;
+    color: #e0e0e0;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  article p { 
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+  }
+  article ul, article ol {
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  article li {
+    margin-bottom: 0.5rem;
+  }
+  article strong {
+    color: #ffffff;
+  }
+  article code {
+    background: #1a1a1a;
+    color: #50fa7b;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  article pre {
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  article pre code {
+    background: transparent;
+    padding: 0;
+  }
+  article blockquote {
+    border-left: 4px solid #4a9eff;
+    background: #1a1a1a;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    color: #c0c0c0;
+  }
+</style>
+
+<article>
+  <h1>Guía Básica de Git para Principiantes</h1>
+  <small>20 de enero de 2025</small>
+  <div><h2 id="introducción-a-git">Introducción a Git</h2>
+<p>Git es un sistema de control de versiones distribuido que permite gestionar y rastrear cambios en proyectos de desarrollo de software. Es una herramienta fundamental para cualquier programador.</p>
+<h2 id="conceptos-básicos">Conceptos Básicos</h2>
+<h3 id="qué-es-un-repositorio">¿Qué es un repositorio?</h3>
+<p>Un repositorio es el lugar donde Git almacena todos los archivos y el historial completo de cambios de un proyecto. Puede ser local (en tu ordenador) o remoto (en servicios como GitHub o GitLab).</p>
+<h3 id="estados-de-los-archivos">Estados de los archivos</h3>
+<p>Los archivos en Git pueden estar en tres estados principales:</p>
+<ul>
+<li><strong>Modified</strong>: El archivo ha sido modificado pero no guardado en el repositorio</li>
+<li><strong>Staged</strong>: El archivo modificado está marcado para incluirse en el próximo commit</li>
+<li><strong>Committed</strong>: Los datos están guardados de forma segura en el repositorio local</li>
+</ul>
+<h2 id="comandos-esenciales">Comandos Esenciales</h2>
+<h3 id="inicializar-un-repositorio">Inicializar un repositorio</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git init
+</span></span></code></pre></div><p>Este comando crea un nuevo repositorio Git en el directorio actual.</p>
+<h3 id="clonar-un-repositorio-existente">Clonar un repositorio existente</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git clone https://github.com/usuario/repositorio.git
+</span></span></code></pre></div><p>Descarga una copia completa de un repositorio remoto.</p>
+<h3 id="verificar-el-estado">Verificar el estado</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git status
+</span></span></code></pre></div><p>Muestra qué archivos han sido modificados, añadidos o están listos para commit.</p>
+<h3 id="añadir-archivos-al-staging">Añadir archivos al staging</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Añadir un archivo específico</span>
+</span></span><span style="display:flex;"><span>git add archivo.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Añadir todos los archivos modificados</span>
+</span></span><span style="display:flex;"><span>git add .
+</span></span></code></pre></div><h3 id="hacer-un-commit">Hacer un commit</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Mensaje descriptivo del cambio&#34;</span>
+</span></span></code></pre></div><p>Guarda los cambios del staging area en el historial del repositorio.</p>
+<h3 id="ver-el-historial">Ver el historial</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git log
+</span></span></code></pre></div><p>Muestra el historial de commits con sus mensajes, autores y fechas.</p>
+<h2 id="trabajar-con-ramas">Trabajar con Ramas</h2>
+<p>Las ramas permiten desarrollar características de forma aislada sin afectar al código principal.</p>
+<h3 id="crear-una-nueva-rama">Crear una nueva rama</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git branch nombre-rama
+</span></span></code></pre></div><h3 id="cambiar-de-rama">Cambiar de rama</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git checkout nombre-rama
+</span></span></code></pre></div><h3 id="crear-y-cambiar-a-una-nueva-rama">Crear y cambiar a una nueva rama</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git checkout -b nueva-rama
+</span></span></code></pre></div><h3 id="fusionar-ramas">Fusionar ramas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Primero cambiar a la rama destino</span>
+</span></span><span style="display:flex;"><span>git checkout main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Luego fusionar</span>
+</span></span><span style="display:flex;"><span>git merge nombre-rama
+</span></span></code></pre></div><h2 id="trabajar-con-repositorios-remotos">Trabajar con Repositorios Remotos</h2>
+<h3 id="añadir-un-remoto">Añadir un remoto</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote add origin https://github.com/usuario/repositorio.git
+</span></span></code></pre></div><h3 id="subir-cambios">Subir cambios</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git push origin main
+</span></span></code></pre></div><h3 id="descargar-cambios">Descargar cambios</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git pull origin main
+</span></span></code></pre></div><h2 id="buenas-prácticas">Buenas Prácticas</h2>
+<ol>
+<li><strong>Commits frecuentes y descriptivos</strong>: Realiza commits pequeños y con mensajes claros</li>
+<li><strong>Usa ramas</strong>: Desarrolla nuevas características en ramas separadas</li>
+<li><strong>Actualiza regularmente</strong>: Mantén tu repositorio local sincronizado con el remoto</li>
+<li><strong>Revisa antes de commitear</strong>: Usa <code>git status</code> y <code>git diff</code> para verificar los cambios</li>
+</ol>
+<h2 id="conclusión">Conclusión</h2>
+<p>Git es una herramienta poderosa que facilita la colaboración y el seguimiento de cambios en proyectos de software. Dominar estos comandos básicos es el primer paso para trabajar eficientemente en desarrollo de software moderno.</p>
+<p>En futuros artículos exploraremos conceptos más avanzados como rebase, cherry-pick y estrategias de branching.</p>
+</div>
+</article>
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Sobre el Blog</h3>
+        <p>Blog sobre tecnología, programación y desarrollo web</p>
+        <p>Creado por <strong>josemaridorado02</strong></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Navegación</h3>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contacto</h3>
+        <div class="social-links">
+          <a href="https://github.com/josemaridorado02" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="mailto:josemariaoteodorado12@gmail.com">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Mi Blog de Informática. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

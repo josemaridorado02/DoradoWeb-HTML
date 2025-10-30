@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Redes on Mi Blog de Informática</title>
+    <link>https://josemaridorado02.github.io/DoradoWeb-HTML/tags/redes/</link>
+    <description>Recent content in Redes on Mi Blog de Informática</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <lastBuildDate>Wed, 29 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josemaridorado02.github.io/DoradoWeb-HTML/tags/redes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Instalación y Uso de Servidor DHCP Kea</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/servidor-dhcp-kea/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/servidor-dhcp-kea/</guid>
+      <description>&lt;h2 id=&#34;introducción&#34;&gt;Introducción&lt;/h2&gt;&#xA;&lt;p&gt;En este tutorial aprenderemos a configurar un servidor DHCP utilizando Kea, una implementación moderna y flexible del protocolo DHCP desarrollada por ISC (Internet Systems Consortium). Kea es el sucesor del clásico ISC DHCP Server y ofrece mejor rendimiento, mayor flexibilidad y una configuración basada en JSON.&lt;/p&gt;&#xA;&lt;h2 id=&#34;instalación-del-servidor-kea&#34;&gt;Instalación del Servidor Kea&lt;/h2&gt;&#xA;&lt;p&gt;Primero actualizamos el sistema e instalamos el servidor DHCP Kea:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo apt update &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt upgrade&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo apt install kea-dhcp4-server -y&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;configuración-básica-del-servidor&#34;&gt;Configuración Básica del Servidor&lt;/h2&gt;&#xA;&lt;p&gt;La configuración de Kea se realiza en el archivo &lt;code&gt;/etc/kea/kea-dhcp4.conf&lt;/code&gt;. Es importante tener cuidado con la sintaxis JSON, ya que cualquier error mínimo impedirá que el servicio funcione correctamente.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

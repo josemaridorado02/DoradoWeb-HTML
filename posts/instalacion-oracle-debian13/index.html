@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalación de Oracle Database 21c en Debian 13 | Mi Blog de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #1a1a1a;
+      --text: #e0e0e0;
+      --text2: #a0a0a0;
+      --accent: #4a9eff;
+      --accent-hover: #66b3ff;
+      --border: #404040;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+    }
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(74, 158, 255, 0.1);
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      width: 250px;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--border);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .footer-section p,
+    .footer-section a {
+      color: var(--text2);
+      text-decoration: none;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="/DoradoWeb-HTML/images/foto_perfil.jpeg" alt="josemaridorado02">
+        <h1>Mi Blog de Informática</h1>
+      </div>
+      <nav>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </nav>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar artículos...">
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    
+<style>
+  article {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  article h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  article small {
+    color: #999;
+    font-size: 0.95rem;
+  }
+  article > div {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  article h2 { 
+    font-size: 2rem; 
+    color: #4a9eff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  article h3 { 
+    font-size: 1.6rem; 
+    color: #4a9eff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  article h4 { 
+    font-size: 1.3rem;
+    color: #e0e0e0;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  article p { 
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+  }
+  article ul, article ol {
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  article li {
+    margin-bottom: 0.5rem;
+  }
+  article strong {
+    color: #ffffff;
+  }
+  article code {
+    background: #1a1a1a;
+    color: #50fa7b;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  article pre {
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  article pre code {
+    background: transparent;
+    padding: 0;
+  }
+  article blockquote {
+    border-left: 4px solid #4a9eff;
+    background: #1a1a1a;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    color: #c0c0c0;
+  }
+</style>
+
+<article>
+  <h1>Instalación de Oracle Database 21c en Debian 13</h1>
+  <small>30 de enero de 2025</small>
+  <div><h2 id="introducción">Introducción</h2>
+<p>Oracle Database es uno de los sistemas gestores de bases de datos relacionales más potentes y utilizados en entornos empresariales. En este tutorial aprenderemos a instalar Oracle Database 21c Express Edition en Debian 13 y configurarlo para acceso remoto.</p>
+<h2 id="preparación-del-sistema">Preparación del Sistema</h2>
+<h3 id="instalación-de-dependencias">Instalación de Dependencias</h3>
+<p>Primero actualizamos el sistema e instalamos las dependencias necesarias:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span><span style="display:flex;"><span>sudo apt install rlwrap libaio1t64 libaio-dev unixodbc wget -y
+</span></span></code></pre></div><p><strong>Nota importante sobre Debian 13</strong>: En versiones anteriores se utilizaba el paquete <code>libaio1</code>, pero en Debian 13 este ha sido renombrado a <code>libaio1t64</code>.</p>
+<h3 id="crear-enlace-simbólico-para-compatibilidad">Crear Enlace Simbólico para Compatibilidad</h3>
+<p>Oracle busca la librería <code>/usr/lib/x86_64-linux-gnu/libaio.so.1</code>, pero en Debian 13 se llama <code>libaio.so.1t64</code>. Creamos un enlace simbólico para mantener la compatibilidad:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>           /usr/lib/x86_64-linux-gnu/libaio.so.1
+</span></span></code></pre></div><h2 id="descarga-de-oracle-database">Descarga de Oracle Database</h2>
+<p>Descargamos el paquete de instalación desde el sitio oficial de Oracle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+</span></span></code></pre></div><h2 id="conversión-del-paquete-rpm-a-deb">Conversión del Paquete RPM a DEB</h2>
+<p>Oracle distribuye sus paquetes en formato RPM (Red Hat Package Manager), pero necesitamos convertirlo a formato DEB para Debian.</p>
+<h3 id="instalar-alien">Instalar Alien</h3>
+<p>Alien es una herramienta que permite convertir paquetes entre diferentes formatos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install alien
+</span></span></code></pre></div><p>Alien soporta conversión entre formatos como RPM, DEB, SLP y otros.</p>
+<h3 id="convertir-el-paquete">Convertir el Paquete</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo alien --scripts --to-deb oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+</span></span></code></pre></div><p><strong>Advertencia</strong>: Este proceso puede tardar varios minutos. Una vez completado, encontrarás un archivo <code>.deb</code> en el mismo directorio.</p>
+<h2 id="instalación-de-oracle-database">Instalación de Oracle Database</h2>
+<p>Instalamos el paquete DEB generado:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dpkg -i oracle-database-ee-21c_1.0-2_amd64.deb
+</span></span></code></pre></div><h2 id="configuración-del-sistema">Configuración del Sistema</h2>
+<h3 id="configurar-resolución-de-nombres">Configurar Resolución de Nombres</h3>
+<p>Oracle necesita resolver correctamente el hostname. Añadimos la IP de nuestra máquina al archivo <code>/etc/hosts</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>hostname -I | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74"> </span><span style="color:#66d9ef">$(</span>hostname<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> | sudo tee -a /etc/hosts
+</span></span></code></pre></div><p>Esto previene problemas al arrancar el listener de Oracle.</p>
+<h3 id="configurar-el-servicio-de-base-de-datos">Configurar el Servicio de Base de Datos</h3>
+<p>Ejecutamos el script de configuración que se instala con Oracle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo /etc/init.d/oracledb_ORCLCDB-21c configure
+</span></span></code></pre></div><p>Este script configura el servicio para que se inicie automáticamente con el sistema.</p>
+<h3 id="permisos-de-usuario">Permisos de Usuario</h3>
+<p>Añadimos nuestro usuario al grupo <code>dba</code> para tener privilegios de administración:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo usermod -aG dba $USER
+</span></span></code></pre></div><p><strong>Importante</strong>: Debes cerrar sesión y volver a iniciarla para que los cambios de grupo surtan efecto.</p>
+<h2 id="variables-de-entorno">Variables de Entorno</h2>
+<p>Oracle requiere configurar varias variables de entorno. Las añadimos a nuestro archivo <code>.bashrc</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export ORACLE_HOME=/opt/oracle/product/21c/dbhome_1&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export ORACLE_SID=ORCLCDB&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export NLS_LANG=SPANISH_SPAIN.AL32UTF8&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export ORACLE_BASE=/opt/oracle&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export PATH=$ORACLE_HOME/bin:$PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;alias sqlplus=&#39;rlwrap sqlplus&#39;&#34;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>source ~/.bashrc
+</span></span></code></pre></div><p><strong>Explicación de variables</strong>:</p>
+<ul>
+<li><code>ORACLE_HOME</code>: Directorio de instalación de Oracle</li>
+<li><code>ORACLE_SID</code>: Identificador de la instancia de base de datos</li>
+<li><code>NLS_LANG</code>: Configuración de idioma y codificación</li>
+<li><code>LD_LIBRARY_PATH</code>: Rutas de las librerías compartidas</li>
+<li>Alias <code>sqlplus</code>: Añade funcionalidad de edición de línea con <code>rlwrap</code></li>
+</ul>
+<h2 id="primer-acceso-a-oracle">Primer Acceso a Oracle</h2>
+<p>Conectamos como administrador:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sqlplus / as sysdba
+</span></span></code></pre></div><h3 id="habilitar-creación-de-usuarios">Habilitar Creación de Usuarios</h3>
+<p>Por defecto, Oracle 21c requiere habilitar un parámetro especial para crear usuarios tradicionales:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">SESSION</span> <span style="color:#66d9ef">SET</span> <span style="color:#e6db74">&#34;_ORACLE_SCRIPT&#34;</span><span style="color:#f92672">=</span><span style="color:#66d9ef">true</span>;
+</span></span></code></pre></div><h3 id="crear-usuario-y-asignar-privilegios">Crear Usuario y Asignar Privilegios</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> oteo IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">1234</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">TO</span> oteo;
+</span></span></code></pre></div><p><strong>Recomendación de seguridad</strong>: En producción, utiliza contraseñas robustas y asigna solo los privilegios necesarios.</p>
+<h2 id="inicio-automático-del-servicio">Inicio Automático del Servicio</h2>
+<p>Para que Oracle se inicie automáticamente al arrancar el sistema, añadimos una tarea cron:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo crontab -e
+</span></span></code></pre></div><p>Añade esta línea:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 480 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>@</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>u</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>y</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='152' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='192' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='224' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='248' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='256' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='264' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='272' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='280' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='288' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='296' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='304' y='4' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='312' y='4' fill='currentColor' style='font-size:1em'>_</text>
+<text text-anchor='middle' x='320' y='4' fill='currentColor' style='font-size:1em'>O</text>
+<text text-anchor='middle' x='328' y='4' fill='currentColor' style='font-size:1em'>R</text>
+<text text-anchor='middle' x='336' y='4' fill='currentColor' style='font-size:1em'>C</text>
+<text text-anchor='middle' x='344' y='4' fill='currentColor' style='font-size:1em'>L</text>
+<text text-anchor='middle' x='352' y='4' fill='currentColor' style='font-size:1em'>C</text>
+<text text-anchor='middle' x='360' y='4' fill='currentColor' style='font-size:1em'>D</text>
+<text text-anchor='middle' x='368' y='4' fill='currentColor' style='font-size:1em'>B</text>
+<text text-anchor='middle' x='376' y='4' fill='currentColor' style='font-size:1em'>-</text>
+<text text-anchor='middle' x='384' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='392' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='400' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='408' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='416' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='424' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='432' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='440' y='4' fill='currentColor' style='font-size:1em'>v</text>
+<text text-anchor='middle' x='448' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='456' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='464' y='4' fill='currentColor' style='font-size:1em'>e</text>
+</g>
+
+    </svg>
+  
+</div>
+<h2 id="configuración-para-acceso-remoto">Configuración para Acceso Remoto</h2>
+<h3 id="configurar-el-listener">Configurar el Listener</h3>
+<p>Por defecto, Oracle solo escucha conexiones en localhost. Modificamos el archivo <code>listener.ora</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /opt/oracle/homes/OraDBHome21cEE/network/admin/listener.ora
+</span></span></code></pre></div><p>Cambia la línea que contiene <code>HOST = debian</code> (o el nombre de tu host) por:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 120 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>H</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>O</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>S</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>T</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>=</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>0</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>Esto permite que el listener acepte conexiones desde cualquier interfaz de red.</p>
+<h3 id="configurar-tns-names">Configurar TNS Names</h3>
+<p>También debemos modificar <code>tnsnames.ora</code> para permitir conexiones remotas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /opt/oracle/homes/OraDBHome21cEE/network/admin/tnsnames.ora
+</span></span></code></pre></div><p>Realiza el mismo cambio: reemplaza el hostname por <code>0.0.0.0</code>.</p>
+<h3 id="aplicar-cambios">Aplicar Cambios</h3>
+<p>Reinicia el servicio para aplicar la configuración:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart oracledb_ORCLCDB-21c.service
+</span></span></code></pre></div><h2 id="configuración-del-cliente">Configuración del Cliente</h2>
+<h3 id="instalar-dependencias-en-el-cliente">Instalar Dependencias en el Cliente</h3>
+<p>En la máquina cliente, instalamos los paquetes necesarios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span><span style="display:flex;"><span>sudo apt install rlwrap libaio1t64 libaio-dev wget p7zip-full -y
+</span></span></code></pre></div><h3 id="crear-enlace-simbólico">Crear Enlace Simbólico</h3>
+<p>Al igual que en el servidor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>           /usr/lib/x86_64-linux-gnu/libaio.so.1
+</span></span></code></pre></div><h3 id="descargar-oracle-instant-client">Descargar Oracle Instant Client</h3>
+<p>Creamos un directorio para Oracle y descargamos los componentes necesarios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir ~/oracle
+</span></span><span style="display:flex;"><span>cd ~/oracle
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wget https://download.oracle.com/otn_software/linux/instantclient/2119000/instantclient-basic-linux.x64-21.19.0.0.0dbru.zip
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wget https://download.oracle.com/otn_software/linux/instantclient/2119000/instantclient-sqlplus-linux.x64-21.19.0.0.0dbru.zip
+</span></span></code></pre></div><h3 id="extraer-los-archivos">Extraer los Archivos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>7z x instantclient-basic-linux.x64-21.19.0.0.0dbru.zip
+</span></span><span style="display:flex;"><span>7z x instantclient-sqlplus-linux.x64-21.19.0.0.0dbru.zip
+</span></span></code></pre></div><h3 id="configurar-variables-de-entorno">Configurar Variables de Entorno</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export ORACLE_HOME=$HOME/oracle/instantclient_21_19&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export PATH=$ORACLE_HOME:$PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;export LD_LIBRARY_PATH=$ORACLE_HOME:$LD_LIBRARY_PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;alias sqlplus=&#39;rlwrap sqlplus&#39;&#34;</span> &gt;&gt; ~/.bashrc
+</span></span><span style="display:flex;"><span>source ~/.bashrc
+</span></span></code></pre></div><h2 id="conectar-remotamente">Conectar Remotamente</h2>
+<p>Desde el cliente, nos conectamos al servidor Oracle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sqlplus usuario/password@//IP_DEL_SERVIDOR:1521/ORCLCDB
+</span></span></code></pre></div><p>Ejemplo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sqlplus oteo/1234@//192.168.1.100:1521/ORCLCDB
+</span></span></code></pre></div><h2 id="ejemplo-práctico-biblioteca">Ejemplo Práctico: Biblioteca</h2>
+<h3 id="crear-tablas">Crear Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> AUTORES (
+</span></span><span style="display:flex;"><span>    ID_AUTOR NUMBER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    NOMBRE VARCHAR2(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    NACIONALIDAD VARCHAR2(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    FECHA_NACIMIENTO DATE
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> LIBROS (
+</span></span><span style="display:flex;"><span>    ID_LIBRO NUMBER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    TITULO VARCHAR2(<span style="color:#ae81ff">200</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    ID_AUTOR NUMBER <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    ANO_PUBLICACION NUMBER(<span style="color:#ae81ff">4</span>),
+</span></span><span style="display:flex;"><span>    GENERO VARCHAR2(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> FK_LIBROS_AUTORES <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (ID_AUTOR) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> AUTORES(ID_AUTOR)
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Prestamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> PRESTAMOS (
+</span></span><span style="display:flex;"><span>    ID_PRESTAMO NUMBER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    ID_LIBRO NUMBER <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    NOMBRE_USUARIO VARCHAR2(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    FECHA_PRESTAMO DATE <span style="color:#66d9ef">DEFAULT</span> SYSDATE,
+</span></span><span style="display:flex;"><span>    FECHA_DEVOLUCION DATE,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> FK_PRESTAMOS_LIBROS <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (ID_LIBRO) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> LIBROS(ID_LIBRO)
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><h3 id="insertar-datos-de-prueba">Insertar Datos de Prueba</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> AUTORES <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Gabriel García Márquez&#39;</span>, <span style="color:#e6db74">&#39;Colombiana&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;1927-03-06&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> AUTORES <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;J.K. Rowling&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;1965-07-31&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> AUTORES <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Isaac Asimov&#39;</span>, <span style="color:#e6db74">&#39;Estadounidense&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;1920-01-02&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> AUTORES <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Jane Austen&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;1775-12-16&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Cien Años de Soledad&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1967</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;Harry Potter y la Piedra Filosofal&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1997</span>, <span style="color:#e6db74">&#39;Fantasía&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Fundación&#39;</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1951</span>, <span style="color:#e6db74">&#39;Ciencia Ficción&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Orgullo y Prejuicio&#39;</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1813</span>, <span style="color:#e6db74">&#39;Novela Romántica&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;El Amor en los Tiempos del Cólera&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1985</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Préstamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Juan Pérez&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;2025-09-01&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>), TO_DATE(<span style="color:#e6db74">&#39;2025-09-15&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;María López&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;2025-09-05&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>), <span style="color:#66d9ef">NULL</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Carlos Ramírez&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;2025-09-10&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>), TO_DATE(<span style="color:#e6db74">&#39;2025-09-20&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Ana Gómez&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;2025-09-12&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>), <span style="color:#66d9ef">NULL</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;Luis Martínez&#39;</span>, TO_DATE(<span style="color:#e6db74">&#39;2025-09-15&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>), TO_DATE(<span style="color:#e6db74">&#39;2025-09-25&#39;</span>, <span style="color:#e6db74">&#39;YYYY-MM-DD&#39;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">COMMIT</span>;
+</span></span></code></pre></div><h3 id="consultas-de-verificación">Consultas de Verificación</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> AUTORES;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> LIBROS;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> PRESTAMOS;
+</span></span></code></pre></div><h2 id="solución-de-problemas-comunes">Solución de Problemas Comunes</h2>
+<h3 id="error-al-iniciar-el-listener">Error al Iniciar el Listener</h3>
+<p>Si el listener no inicia, verifica que el hostname esté correctamente configurado en <code>/etc/hosts</code>.</p>
+<h3 id="problemas-de-permisos">Problemas de Permisos</h3>
+<p>Asegúrate de que tu usuario esté en el grupo <code>dba</code> y hayas cerrado/iniciado sesión.</p>
+<h3 id="oracle-no-arranca-automáticamente">Oracle no Arranca Automáticamente</h3>
+<p>Verifica que la tarea cron esté correctamente configurada con <code>sudo crontab -l</code>.</p>
+<h2 id="conclusión">Conclusión</h2>
+<p>Oracle Database es una solución robusta para entornos empresariales que requieren alta disponibilidad, seguridad avanzada y características empresariales como particionamiento, RAC y Data Guard. Aunque su instalación y configuración inicial puede parecer compleja, siguiendo estos pasos tendrás un servidor Oracle completamente funcional en Debian 13.</p>
+</div>
+</article>
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Sobre el Blog</h3>
+        <p>Blog sobre tecnología, programación y desarrollo web</p>
+        <p>Creado por <strong>josemaridorado02</strong></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Navegación</h3>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contacto</h3>
+        <div class="social-links">
+          <a href="https://github.com/josemaridorado02" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="mailto:josemariaoteodorado12@gmail.com">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Mi Blog de Informática. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

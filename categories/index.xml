@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Mi Blog de Informática</title>
+    <link>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/</link>
+    <description>Recent content in Categories on Mi Blog de Informática</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <lastBuildDate>Thu, 30 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josemaridorado02.github.io/DoradoWeb-HTML/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bases De Datos</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/bases-de-datos/</link>
+      <pubDate>Thu, 30 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/bases-de-datos/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tutoriales</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/tutoriales/</link>
+      <pubDate>Thu, 30 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/tutoriales/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Redes</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/redes/</link>
+      <pubDate>Wed, 29 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/categories/redes/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

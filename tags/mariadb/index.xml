@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mariadb on Mi Blog de Informática</title>
+    <link>https://josemaridorado02.github.io/DoradoWeb-HTML/tags/mariadb/</link>
+    <description>Recent content in Mariadb on Mi Blog de Informática</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <lastBuildDate>Thu, 30 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josemaridorado02.github.io/DoradoWeb-HTML/tags/mariadb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Instalación de MariaDB en Debian 13</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/instalacion-mariadb-debian13/</link>
+      <pubDate>Thu, 30 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/instalacion-mariadb-debian13/</guid>
+      <description>&lt;h2 id=&#34;introducción&#34;&gt;Introducción&lt;/h2&gt;&#xA;&lt;p&gt;MariaDB es un sistema gestor de bases de datos relacionales de código abierto, creado como fork de MySQL por los desarrolladores originales después de que Oracle Corporation adquiriera MySQL. MariaDB ofrece compatibilidad total con MySQL mientras añade mejoras de rendimiento, nuevas características y mejor licenciamiento.&lt;/p&gt;&#xA;&lt;h2 id=&#34;instalación-del-servidor&#34;&gt;Instalación del Servidor&lt;/h2&gt;&#xA;&lt;h3 id=&#34;actualizar-el-sistema&#34;&gt;Actualizar el Sistema&lt;/h3&gt;&#xA;&lt;p&gt;Como siempre, comenzamos actualizando los repositorios:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo apt update&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;instalar-mariadb-server&#34;&gt;Instalar MariaDB Server&lt;/h3&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo apt install mariadb-server -y&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;habilitar-e-iniciar-el-servicio&#34;&gt;Habilitar e Iniciar el Servicio&lt;/h3&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl enable mariadb&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl start mariadb&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Verificar el estado:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

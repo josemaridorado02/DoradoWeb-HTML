@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | Mi Blog de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #1a1a1a;
+      --text: #e0e0e0;
+      --text2: #a0a0a0;
+      --accent: #4a9eff;
+      --accent-hover: #66b3ff;
+      --border: #404040;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+    }
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(74, 158, 255, 0.1);
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      width: 250px;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--border);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .footer-section p,
+    .footer-section a {
+      color: var(--text2);
+      text-decoration: none;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="/DoradoWeb-HTML/images/foto_perfil.jpeg" alt="josemaridorado02">
+        <h1>Mi Blog de Informática</h1>
+      </div>
+      <nav>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </nav>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar artículos...">
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    
+<h1 style="font-size: 3rem; margin-bottom: 1rem;">🏷️ Administración</h1>
+<p style="color: var(--text2); font-size: 1.2rem; margin-bottom: 3rem;">
+  1 artículo(s) con esta etiqueta
+</p>
+
+
+<div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 2rem; margin-bottom: 2rem;">
+  <h2><a href="/DoradoWeb-HTML/posts/servidor-dhcp-kea/" style="color: var(--text); text-decoration: none;">Instalación y Uso de Servidor DHCP Kea</a></h2>
+  <small style="color: var(--text2);">29 January 2025</small>
+  <p style="color: var(--text2); margin-top: 1rem;"><h2 id="introducción">Introducción</h2>
+<p>En este tutorial aprenderemos a configurar un servidor DHCP utilizando Kea, una implementación moderna y flexible del protocolo DHCP desarrollada por ISC (Internet Systems Consortium). Kea es el sucesor del clásico ISC DHCP Server y ofrece mejor rendimiento, mayor flexibilidad y una configuración basada en JSON.</p>
+<h2 id="instalación-del-servidor-kea">Instalación del Servidor Kea</h2>
+<p>Primero actualizamos el sistema e instalamos el servidor DHCP Kea:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update <span style="color:#f92672">&amp;&amp;</span> sudo apt upgrade
+</span></span><span style="display:flex;"><span>sudo apt install kea-dhcp4-server -y
+</span></span></code></pre></div><h2 id="configuración-básica-del-servidor">Configuración Básica del Servidor</h2>
+<p>La configuración de Kea se realiza en el archivo <code>/etc/kea/kea-dhcp4.conf</code>. Es importante tener cuidado con la sintaxis JSON, ya que cualquier error mínimo impedirá que el servicio funcione correctamente.</p></p>
+</div>
+
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Sobre el Blog</h3>
+        <p>Blog sobre tecnología, programación y desarrollo web</p>
+        <p>Creado por <strong>josemaridorado02</strong></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Navegación</h3>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contacto</h3>
+        <div class="social-links">
+          <a href="https://github.com/josemaridorado02" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="mailto:josemariaoteodorado12@gmail.com">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Mi Blog de Informática. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

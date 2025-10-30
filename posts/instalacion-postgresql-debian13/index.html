@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalación de PostgreSQL en Debian 13 | Mi Blog de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #1a1a1a;
+      --text: #e0e0e0;
+      --text2: #a0a0a0;
+      --accent: #4a9eff;
+      --accent-hover: #66b3ff;
+      --border: #404040;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+    }
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(74, 158, 255, 0.1);
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      width: 250px;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--border);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .footer-section p,
+    .footer-section a {
+      color: var(--text2);
+      text-decoration: none;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="/DoradoWeb-HTML/images/foto_perfil.jpeg" alt="josemaridorado02">
+        <h1>Mi Blog de Informática</h1>
+      </div>
+      <nav>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </nav>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar artículos...">
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    
+<style>
+  article {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  article h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  article small {
+    color: #999;
+    font-size: 0.95rem;
+  }
+  article > div {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  article h2 { 
+    font-size: 2rem; 
+    color: #4a9eff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  article h3 { 
+    font-size: 1.6rem; 
+    color: #4a9eff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  article h4 { 
+    font-size: 1.3rem;
+    color: #e0e0e0;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  article p { 
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+  }
+  article ul, article ol {
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  article li {
+    margin-bottom: 0.5rem;
+  }
+  article strong {
+    color: #ffffff;
+  }
+  article code {
+    background: #1a1a1a;
+    color: #50fa7b;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  article pre {
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  article pre code {
+    background: transparent;
+    padding: 0;
+  }
+  article blockquote {
+    border-left: 4px solid #4a9eff;
+    background: #1a1a1a;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    color: #c0c0c0;
+  }
+</style>
+
+<article>
+  <h1>Instalación de PostgreSQL en Debian 13</h1>
+  <small>30 de enero de 2025</small>
+  <div><h2 id="introducción">Introducción</h2>
+<p>PostgreSQL es un sistema gestor de bases de datos relacional de código abierto, conocido por su robustez, cumplimiento de estándares SQL y capacidades avanzadas. Es ampliamente utilizado en aplicaciones empresariales que requieren integridad de datos, consultas complejas y características avanzadas como tipos de datos personalizados, índices especializados y soporte para JSON.</p>
+<h2 id="instalación-del-servidor">Instalación del Servidor</h2>
+<h3 id="actualizar-el-sistema">Actualizar el Sistema</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span></code></pre></div><h3 id="instalar-postgresql">Instalar PostgreSQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install postgresql postgresql-contrib -y
+</span></span></code></pre></div><p>El paquete <code>postgresql-contrib</code> incluye módulos y extensiones adicionales útiles.</p>
+<h3 id="habilitar-e-iniciar-el-servicio">Habilitar e Iniciar el Servicio</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable postgresql
+</span></span><span style="display:flex;"><span>sudo systemctl start postgresql
+</span></span></code></pre></div><p>Verificar el estado:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl status postgresql
+</span></span></code></pre></div><h2 id="configuración-inicial">Configuración Inicial</h2>
+<h3 id="acceder-como-usuario-postgres">Acceder como Usuario postgres</h3>
+<p>PostgreSQL crea automáticamente un usuario del sistema llamado <code>postgres</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -i -u postgres
+</span></span></code></pre></div><h3 id="entrar-a-postgresql">Entrar a PostgreSQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql
+</span></span></code></pre></div><h3 id="crear-usuario-y-base-de-datos">Crear Usuario y Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Crear usuario
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> usuario <span style="color:#66d9ef">WITH</span> PASSWORD <span style="color:#e6db74">&#39;contraseña_segura&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Crear base de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> basedatos <span style="color:#66d9ef">OWNER</span> usuario;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Otorgar privilegios
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#66d9ef">DATABASE</span> basedatos <span style="color:#66d9ef">TO</span> usuario;
+</span></span></code></pre></div><h3 id="salir-de-postgresql">Salir de PostgreSQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">\</span>q
+</span></span></code></pre></div><p>Y salir del usuario postgres:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>exit
+</span></span></code></pre></div><h2 id="configuración-para-acceso-remoto">Configuración para Acceso Remoto</h2>
+<p>PostgreSQL requiere configurar dos archivos para permitir conexiones remotas.</p>
+<h3 id="configurar-postgresqlconf">Configurar postgresql.conf</h3>
+<p>Este archivo controla qué interfaces escucha PostgreSQL:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /etc/postgresql/17/main/postgresql.conf
+</span></span></code></pre></div><p>Busca la línea <code>listen_addresses</code> (puedes usar Ctrl+W para buscar):</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 256 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>#</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>_</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>=</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>'</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='176' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='192' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='224' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='240' y='4' fill='currentColor' style='font-size:1em'>'</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>Descoméntala y cámbiala por:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 184 25"
+      >
+      <g transform='translate(8,16)'>
+<circle cx='160' cy='0' r='6' stroke='currentColor' fill='currentColor'></circle>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>_</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>=</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>El asterisco <code>*</code> significa que escuchará en todas las interfaces de red disponibles.</p>
+<h3 id="configurar-pg_hbaconf">Configurar pg_hba.conf</h3>
+<p>Este archivo controla la autenticación de clientes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /etc/postgresql/17/main/pg_hba.conf
+</span></span></code></pre></div><p>Al final del archivo, añade esta línea:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 312 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='176' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='192' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='224' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>/</text>
+<text text-anchor='middle' x='240' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='280' y='4' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='288' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='296' y='4' fill='currentColor' style='font-size:1em'>5</text>
+</g>
+
+    </svg>
+  
+</div>
+<p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>host</code>: Conexión TCP/IP</li>
+<li><code>all</code> (base de datos): Todas las bases de datos</li>
+<li><code>all</code> (usuario): Todos los usuarios</li>
+<li><code>0.0.0.0/0</code>: Cualquier dirección IP</li>
+<li><code>md5</code>: Requiere contraseña encriptada con MD5</li>
+</ul>
+<p><strong>Nota de seguridad</strong>: En producción, restringe el acceso a IPs específicas:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 352 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>h</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>o</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>l</text>
+<text text-anchor='middle' x='176' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>9</text>
+<text text-anchor='middle' x='192' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>6</text>
+<text text-anchor='middle' x='224' y='4' fill='currentColor' style='font-size:1em'>8</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='240' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='248' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='256' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='264' y='4' fill='currentColor' style='font-size:1em'>/</text>
+<text text-anchor='middle' x='272' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='280' y='4' fill='currentColor' style='font-size:1em'>4</text>
+<text text-anchor='middle' x='320' y='4' fill='currentColor' style='font-size:1em'>m</text>
+<text text-anchor='middle' x='328' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='336' y='4' fill='currentColor' style='font-size:1em'>5</text>
+</g>
+
+    </svg>
+  
+</div>
+<h3 id="reiniciar-postgresql">Reiniciar PostgreSQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart postgresql
+</span></span></code></pre></div><h3 id="verificar-que-escucha-correctamente">Verificar que Escucha Correctamente</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ss -tulpn | grep <span style="color:#ae81ff">5432</span>
+</span></span></code></pre></div><p>Deberías ver algo como:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 400 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>t</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>c</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>p</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>L</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>I</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>S</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>T</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>E</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>N</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='152' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>8</text>
+<text text-anchor='middle' x='200' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='208' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='216' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='224' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='232' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='240' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='248' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='256' y='4' fill='currentColor' style='font-size:1em'>:</text>
+<text text-anchor='middle' x='264' y='4' fill='currentColor' style='font-size:1em'>5</text>
+<text text-anchor='middle' x='272' y='4' fill='currentColor' style='font-size:1em'>4</text>
+<text text-anchor='middle' x='280' y='4' fill='currentColor' style='font-size:1em'>3</text>
+<text text-anchor='middle' x='288' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='320' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='328' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='336' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='344' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='352' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='360' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='368' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='376' y='4' fill='currentColor' style='font-size:1em'>:</text>
+<text text-anchor='middle' x='384' y='4' fill='currentColor' style='font-size:1em'>*</text>
+</g>
+
+    </svg>
+  
+</div>
+<h2 id="configuración-del-cliente">Configuración del Cliente</h2>
+<h3 id="instalar-el-cliente-postgresql">Instalar el Cliente PostgreSQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span><span style="display:flex;"><span>sudo apt install postgresql-client -y
+</span></span></code></pre></div><h3 id="conectar-remotamente">Conectar Remotamente</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql -h IP_DEL_SERVIDOR -U usuario -d basedatos
+</span></span></code></pre></div><p>Ejemplo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql -h 192.168.1.100 -U usuario -d basedatos
+</span></span></code></pre></div><p>Se te pedirá la contraseña del usuario.</p>
+<h2 id="ejemplo-práctico-sistema-de-biblioteca">Ejemplo Práctico: Sistema de Biblioteca</h2>
+<h3 id="conectar-a-la-base-de-datos">Conectar a la Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql -h IP_DEL_SERVIDOR -U usuario -d basedatos
+</span></span></code></pre></div><h3 id="crear-tablas">Crear Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> autores (
+</span></span><span style="display:flex;"><span>    id_autor INTEGER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    nombre VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    nacionalidad VARCHAR(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    fecha_nacimiento DATE
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> libros (
+</span></span><span style="display:flex;"><span>    id_libro INTEGER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    titulo VARCHAR(<span style="color:#ae81ff">200</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    id_autor INTEGER <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    ano_publicacion INTEGER,
+</span></span><span style="display:flex;"><span>    genero VARCHAR(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> fk_libros_autores <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (id_autor) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> autores(id_autor)
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Prestamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> prestamos (
+</span></span><span style="display:flex;"><span>    id_prestamo INTEGER <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    id_libro INTEGER <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    nombre_usuario VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    fecha_prestamo DATE <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">CURRENT_DATE</span>,
+</span></span><span style="display:flex;"><span>    fecha_devolucion DATE,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> fk_prestamos_libros <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (id_libro) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> libros(id_libro)
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><h3 id="insertar-datos-de-prueba">Insertar Datos de Prueba</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> autores (id_autor, nombre, nacionalidad, fecha_nacimiento) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Gabriel García Márquez&#39;</span>, <span style="color:#e6db74">&#39;Colombiana&#39;</span>, <span style="color:#e6db74">&#39;1927-03-06&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;J.K. Rowling&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, <span style="color:#e6db74">&#39;1965-07-31&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Isaac Asimov&#39;</span>, <span style="color:#e6db74">&#39;Estadounidense&#39;</span>, <span style="color:#e6db74">&#39;1920-01-02&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Jane Austen&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, <span style="color:#e6db74">&#39;1775-12-16&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> libros (id_libro, titulo, id_autor, ano_publicacion, genero) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Cien Años de Soledad&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1967</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;Harry Potter y la Piedra Filosofal&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1997</span>, <span style="color:#e6db74">&#39;Fantasía&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Fundación&#39;</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1951</span>, <span style="color:#e6db74">&#39;Ciencia Ficción&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Orgullo y Prejuicio&#39;</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1813</span>, <span style="color:#e6db74">&#39;Novela Romántica&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;El Amor en los Tiempos del Cólera&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1985</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Préstamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> prestamos (id_prestamo, id_libro, nombre_usuario, fecha_prestamo, fecha_devolucion) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Juan Pérez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-01&#39;</span>, <span style="color:#e6db74">&#39;2025-09-15&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;María López&#39;</span>, <span style="color:#e6db74">&#39;2025-09-05&#39;</span>, <span style="color:#66d9ef">NULL</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Carlos Ramírez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-10&#39;</span>, <span style="color:#e6db74">&#39;2025-09-20&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Ana Gómez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-12&#39;</span>, <span style="color:#66d9ef">NULL</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;Luis Martínez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-15&#39;</span>, <span style="color:#e6db74">&#39;2025-09-25&#39;</span>);
+</span></span></code></pre></div><h3 id="consultas-de-verificación">Consultas de Verificación</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> autores;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> libros;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> prestamos;
+</span></span></code></pre></div><h2 id="comandos-útiles-de-postgresql">Comandos Útiles de PostgreSQL</h2>
+<h3 id="comandos-meta-con-">Comandos Meta (con )</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">\</span>l              <span style="color:#75715e">-- Listar bases de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span><span style="color:#66d9ef">c</span> <span style="color:#66d9ef">database</span>     <span style="color:#75715e">-- Conectar a una base de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>dt             <span style="color:#75715e">-- Listar tablas
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>d tabla        <span style="color:#75715e">-- Describir estructura de tabla
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>du             <span style="color:#75715e">-- Listar usuarios
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>q              <span style="color:#75715e">-- Salir
+</span></span></span></code></pre></div><h3 id="gestión-de-bases-de-datos">Gestión de Bases de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Crear base de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> nueva_bd;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Eliminar base de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">DATABASE</span> nombre_bd;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Ver tamaño de base de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> pg_size_pretty(pg_database_size(<span style="color:#e6db74">&#39;basedatos&#39;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Listar todas las bases de datos con su tamaño
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    datname <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">database</span>,
+</span></span><span style="display:flex;"><span>    pg_size_pretty(pg_database_size(datname)) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> pg_database
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> pg_database_size(datname) <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h2 id="gestión-de-usuarios-y-privilegios">Gestión de Usuarios y Privilegios</h2>
+<h3 id="crear-usuario">Crear Usuario</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> nuevo_usuario <span style="color:#66d9ef">WITH</span> PASSWORD <span style="color:#e6db74">&#39;password&#39;</span>;
+</span></span></code></pre></div><h3 id="usuario-con-privilegios-específicos">Usuario con Privilegios Específicos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Usuario solo lectura
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> lector <span style="color:#66d9ef">WITH</span> PASSWORD <span style="color:#e6db74">&#39;password&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">CONNECT</span> <span style="color:#66d9ef">ON</span> <span style="color:#66d9ef">DATABASE</span> basedatos <span style="color:#66d9ef">TO</span> lector;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">ON</span> <span style="color:#66d9ef">ALL</span> TABLES <span style="color:#66d9ef">IN</span> <span style="color:#66d9ef">SCHEMA</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">TO</span> lector;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Usuario con permisos de escritura
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> editor <span style="color:#66d9ef">WITH</span> PASSWORD <span style="color:#e6db74">&#39;password&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#66d9ef">DATABASE</span> basedatos <span style="color:#66d9ef">TO</span> editor;
+</span></span></code></pre></div><h3 id="ver-privilegios">Ver Privilegios</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">\</span>du                          <span style="color:#75715e">-- Lista usuarios y roles
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">\</span>dp nombre_tabla             <span style="color:#75715e">-- Privilegios sobre una tabla
+</span></span></span></code></pre></div><h3 id="modificar-usuario">Modificar Usuario</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Cambiar contraseña
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> usuario <span style="color:#66d9ef">WITH</span> PASSWORD <span style="color:#e6db74">&#39;nueva_contraseña&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Hacer superusuario
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> usuario <span style="color:#66d9ef">WITH</span> SUPERUSER;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Permitir crear bases de datos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">USER</span> usuario <span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">CREATEDB</span>;
+</span></span></code></pre></div><h3 id="eliminar-usuario">Eliminar Usuario</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">USER</span> nombre_usuario;
+</span></span></code></pre></div><h2 id="copias-de-seguridad">Copias de Seguridad</h2>
+<h3 id="exportar-base-de-datos">Exportar Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pg_dump -h localhost -U usuario -d basedatos &gt; backup.sql
+</span></span></code></pre></div><p>Exportar con compresión:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pg_dump -h localhost -U usuario -d basedatos | gzip &gt; backup.sql.gz
+</span></span></code></pre></div><h3 id="importar-base-de-datos">Importar Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>psql -h localhost -U usuario -d basedatos &lt; backup.sql
+</span></span></code></pre></div><p>Con compresión:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gunzip -c backup.sql.gz | psql -h localhost -U usuario -d basedatos
+</span></span></code></pre></div><h3 id="backup-de-todo-el-servidor">Backup de Todo el Servidor</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pg_dumpall -U postgres &gt; backup_completo.sql
+</span></span></code></pre></div><h2 id="características-avanzadas-de-postgresql">Características Avanzadas de PostgreSQL</h2>
+<h3 id="soporte-json">Soporte JSON</h3>
+<p>PostgreSQL tiene excelente soporte para JSON:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Crear tabla con columna JSON
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> productos (
+</span></span><span style="display:flex;"><span>    id SERIAL <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    nombre VARCHAR(<span style="color:#ae81ff">100</span>),
+</span></span><span style="display:flex;"><span>    detalles JSONB
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Insertar datos JSON
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> productos (nombre, detalles) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#e6db74">&#39;Laptop&#39;</span>, <span style="color:#e6db74">&#39;{&#34;marca&#34;: &#34;Dell&#34;, &#34;ram&#34;: 16, &#34;disco&#34;: &#34;512GB SSD&#34;}&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Consultar datos JSON
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> nombre, detalles<span style="color:#f92672">-&gt;&gt;</span><span style="color:#e6db74">&#39;marca&#39;</span> <span style="color:#66d9ef">AS</span> marca
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> productos
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> detalles<span style="color:#f92672">-&gt;&gt;</span><span style="color:#e6db74">&#39;ram&#39;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;16&#39;</span>;
+</span></span></code></pre></div><h3 id="funciones-de-ventana">Funciones de Ventana</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Ranking de libros por año
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    titulo,
+</span></span><span style="display:flex;"><span>    ano_publicacion,
+</span></span><span style="display:flex;"><span>    RANK() OVER (<span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> ano_publicacion <span style="color:#66d9ef">DESC</span>) <span style="color:#66d9ef">AS</span> ranking
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> libros;
+</span></span></code></pre></div><h3 id="índices-especializados">Índices Especializados</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Índice B-tree (por defecto)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> idx_libros_titulo <span style="color:#66d9ef">ON</span> libros(titulo);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Índice para búsqueda de texto completo
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> idx_libros_titulo_ft <span style="color:#66d9ef">ON</span> libros <span style="color:#66d9ef">USING</span> GIN(to_tsvector(<span style="color:#e6db74">&#39;spanish&#39;</span>, titulo));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Índice parcial
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> idx_prestamos_activos <span style="color:#66d9ef">ON</span> prestamos(id_libro) 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> fecha_devolucion <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NULL</span>;
+</span></span></code></pre></div><h2 id="optimización-y-mantenimiento">Optimización y Mantenimiento</h2>
+<h3 id="analizar-tablas">Analizar Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">ANALYZE</span> autores;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ANALYZE</span> libros;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ANALYZE</span> prestamos;
+</span></span></code></pre></div><h3 id="vacuum-limpiar-espacio">Vacuum (Limpiar Espacio)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">VACUUM</span> autores;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">VACUUM</span> <span style="color:#66d9ef">FULL</span>;  <span style="color:#75715e">-- Más agresivo, requiere bloqueo exclusivo
+</span></span></span></code></pre></div><h3 id="ver-estadísticas">Ver Estadísticas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Tamaño de las tablas
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    schemaname,
+</span></span><span style="display:flex;"><span>    tablename,
+</span></span><span style="display:flex;"><span>    pg_size_pretty(pg_total_relation_size(schemaname<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;.&#39;</span><span style="color:#f92672">||</span>tablename)) <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> pg_tables
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> schemaname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;public&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> pg_total_relation_size(schemaname<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;.&#39;</span><span style="color:#f92672">||</span>tablename) <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h2 id="solución-de-problemas-comunes">Solución de Problemas Comunes</h2>
+<h3 id="no-puedo-conectar-remotamente">No Puedo Conectar Remotamente</h3>
+<ol>
+<li>Verifica <code>listen_addresses = '*'</code> en <code>postgresql.conf</code></li>
+<li>Verifica la línea en <code>pg_hba.conf</code>: <code>host all all 0.0.0.0/0 md5</code></li>
+<li>Reinicia PostgreSQL: <code>sudo systemctl restart postgresql</code></li>
+<li>Verifica el firewall: <code>sudo ufw allow 5432/tcp</code></li>
+</ol>
+<h3 id="error-password-authentication-failed">Error &ldquo;password authentication failed&rdquo;</h3>
+<p>Verifica que el método de autenticación en <code>pg_hba.conf</code> sea <code>md5</code> o <code>scram-sha-256</code>, no <code>peer</code>.</p>
+<h3 id="error-fatal-database-does-not-exist">Error &ldquo;FATAL: database does not exist&rdquo;</h3>
+<p>Asegúrate de que la base de datos existe:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">\</span>l
+</span></span></code></pre></div><p>Si no existe, créala:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> nombre_bd;
+</span></span></code></pre></div><h2 id="conclusión">Conclusión</h2>
+<p>PostgreSQL es una de las bases de datos relacionales más avanzadas y confiables disponibles. Su cumplimiento de estándares SQL, características avanzadas como soporte JSON nativo, funciones de ventana, y extensiones personalizadas lo hacen ideal para aplicaciones complejas que requieren integridad de datos y consultas sofisticadas.</p>
+</div>
+</article>
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Sobre el Blog</h3>
+        <p>Blog sobre tecnología, programación y desarrollo web</p>
+        <p>Creado por <strong>josemaridorado02</strong></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Navegación</h3>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contacto</h3>
+        <div class="social-links">
+          <a href="https://github.com/josemaridorado02" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="mailto:josemariaoteodorado12@gmail.com">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Mi Blog de Informática. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

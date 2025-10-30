@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalación de MariaDB en Debian 13 | Mi Blog de Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #1a1a1a;
+      --text: #e0e0e0;
+      --text2: #a0a0a0;
+      --accent: #4a9eff;
+      --accent-hover: #66b3ff;
+      --border: #404040;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      object-fit: cover;
+    }
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(74, 158, 255, 0.1);
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      width: 250px;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--border);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .footer-section p,
+    .footer-section a {
+      color: var(--text2);
+      text-decoration: none;
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .social-links a:hover {
+      border-color: var(--accent);
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="/DoradoWeb-HTML/images/foto_perfil.jpeg" alt="josemaridorado02">
+        <h1>Mi Blog de Informática</h1>
+      </div>
+      <nav>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </nav>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar artículos...">
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    
+<style>
+  article {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  article h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  article small {
+    color: #999;
+    font-size: 0.95rem;
+  }
+  article > div {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  article h2 { 
+    font-size: 2rem; 
+    color: #4a9eff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  article h3 { 
+    font-size: 1.6rem; 
+    color: #4a9eff;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  article h4 { 
+    font-size: 1.3rem;
+    color: #e0e0e0;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  article p { 
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+  }
+  article ul, article ol {
+    color: #c0c0c0;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  article li {
+    margin-bottom: 0.5rem;
+  }
+  article strong {
+    color: #ffffff;
+  }
+  article code {
+    background: #1a1a1a;
+    color: #50fa7b;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  article pre {
+    background: #1a1a1a;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  article pre code {
+    background: transparent;
+    padding: 0;
+  }
+  article blockquote {
+    border-left: 4px solid #4a9eff;
+    background: #1a1a1a;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    color: #c0c0c0;
+  }
+</style>
+
+<article>
+  <h1>Instalación de MariaDB en Debian 13</h1>
+  <small>30 de enero de 2025</small>
+  <div><h2 id="introducción">Introducción</h2>
+<p>MariaDB es un sistema gestor de bases de datos relacionales de código abierto, creado como fork de MySQL por los desarrolladores originales después de que Oracle Corporation adquiriera MySQL. MariaDB ofrece compatibilidad total con MySQL mientras añade mejoras de rendimiento, nuevas características y mejor licenciamiento.</p>
+<h2 id="instalación-del-servidor">Instalación del Servidor</h2>
+<h3 id="actualizar-el-sistema">Actualizar el Sistema</h3>
+<p>Como siempre, comenzamos actualizando los repositorios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span></code></pre></div><h3 id="instalar-mariadb-server">Instalar MariaDB Server</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install mariadb-server -y
+</span></span></code></pre></div><h3 id="habilitar-e-iniciar-el-servicio">Habilitar e Iniciar el Servicio</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable mariadb
+</span></span><span style="display:flex;"><span>sudo systemctl start mariadb
+</span></span></code></pre></div><p>Verificar el estado:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl status mariadb
+</span></span></code></pre></div><h2 id="configuración-inicial-segura">Configuración Inicial Segura</h2>
+<p>MariaDB incluye un script de configuración segura que nos guía en la configuración inicial:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo mariadb-secure-installation
+</span></span></code></pre></div><p>El script te preguntará:</p>
+<ol>
+<li><strong>Contraseña de root actual</strong>: Presiona Enter (no hay contraseña por defecto)</li>
+<li><strong>Establecer contraseña de root</strong>: Sí (introduce una contraseña segura)</li>
+<li><strong>Eliminar usuarios anónimos</strong>: Sí</li>
+<li><strong>Deshabilitar acceso remoto de root</strong>: Sí (recomendado)</li>
+<li><strong>Eliminar base de datos de prueba</strong>: Sí</li>
+<li><strong>Recargar tablas de privilegios</strong>: Sí</li>
+</ol>
+<h2 id="configuración-para-acceso-remoto">Configuración para Acceso Remoto</h2>
+<h3 id="modificar-la-configuración-del-servidor">Modificar la Configuración del Servidor</h3>
+<p>Por defecto, MariaDB solo escucha conexiones en localhost. Para permitir conexiones remotas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+</span></span></code></pre></div><p>Busca la línea:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 200 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>-</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>=</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>1</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>2</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>7</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='152' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='176' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='184' y='4' fill='currentColor' style='font-size:1em'>1</text>
+</g>
+
+    </svg>
+  
+</div>
+<p>Cámbiala por:</p>
+
+
+
+<div class="goat svg-container ">
+  
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      font-family="Menlo,Lucida Console,monospace"
+      
+        viewBox="0 0 184 25"
+      >
+      <g transform='translate(8,16)'>
+<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>b</text>
+<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>i</text>
+<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>n</text>
+<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>-</text>
+<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>a</text>
+<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>d</text>
+<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>r</text>
+<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>e</text>
+<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>s</text>
+<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>=</text>
+<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='128' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='136' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='144' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='152' y='4' fill='currentColor' style='font-size:1em'>0</text>
+<text text-anchor='middle' x='160' y='4' fill='currentColor' style='font-size:1em'>.</text>
+<text text-anchor='middle' x='168' y='4' fill='currentColor' style='font-size:1em'>0</text>
+</g>
+
+    </svg>
+  
+</div>
+<p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>127.0.0.1</code> = Solo conexiones locales</li>
+<li><code>0.0.0.0</code> = Acepta conexiones desde cualquier IP</li>
+</ul>
+<h3 id="reiniciar-el-servicio">Reiniciar el Servicio</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart mariadb
+</span></span></code></pre></div><h2 id="crear-usuario-remoto">Crear Usuario Remoto</h2>
+<h3 id="acceder-a-mariadb">Acceder a MariaDB</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo mariadb
+</span></span></code></pre></div><p>O con contraseña:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mysql -u root -p
+</span></span></code></pre></div><h3 id="crear-usuario-con-permisos">Crear Usuario con Permisos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Crear usuario que puede conectar desde cualquier IP
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;contraseña_segura&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Otorgar todos los privilegios
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> <span style="color:#66d9ef">WITH</span> <span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">OPTION</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Aplicar cambios
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>FLUSH <span style="color:#66d9ef">PRIVILEGES</span>;
+</span></span></code></pre></div><p><strong>Nota de seguridad</strong>: En producción, limita el acceso a IPs específicas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;192.168.1.100&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;contraseña_segura&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;192.168.1.100&#39;</span>;
+</span></span></code></pre></div><h3 id="salir-de-mariadb">Salir de MariaDB</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>EXIT;
+</span></span></code></pre></div><h2 id="configuración-del-cliente">Configuración del Cliente</h2>
+<h3 id="instalar-el-cliente-mariadb">Instalar el Cliente MariaDB</h3>
+<p>En la máquina cliente, solo necesitamos el cliente:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span><span style="display:flex;"><span>sudo apt install mariadb-client -y
+</span></span></code></pre></div><h3 id="conectar-remotamente">Conectar Remotamente</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mariadb -h IP_DEL_SERVIDOR -u usuario -p
+</span></span></code></pre></div><p>Ejemplo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mariadb -h 192.168.1.100 -u usuario -p
+</span></span></code></pre></div><p>Introduce la contraseña cuando se te solicite.</p>
+<h2 id="ejemplo-práctico-sistema-de-biblioteca">Ejemplo Práctico: Sistema de Biblioteca</h2>
+<h3 id="crear-base-de-datos">Crear Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> biblioteca;
+</span></span><span style="display:flex;"><span>USE biblioteca;
+</span></span></code></pre></div><h3 id="crear-tablas">Crear Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> AUTORES (
+</span></span><span style="display:flex;"><span>    ID_AUTOR INT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    NOMBRE VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    NACIONALIDAD VARCHAR(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    FECHA_NACIMIENTO DATE
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> LIBROS (
+</span></span><span style="display:flex;"><span>    ID_LIBRO INT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    TITULO VARCHAR(<span style="color:#ae81ff">200</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    ID_AUTOR INT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    ANO_PUBLICACION INT,
+</span></span><span style="display:flex;"><span>    GENERO VARCHAR(<span style="color:#ae81ff">50</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> FK_LIBROS_AUTORES <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (ID_AUTOR) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> AUTORES(ID_AUTOR)
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Tabla Prestamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> PRESTAMOS (
+</span></span><span style="display:flex;"><span>    ID_PRESTAMO INT <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>    ID_LIBRO INT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    NOMBRE_USUARIO VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+</span></span><span style="display:flex;"><span>    FECHA_PRESTAMO DATE <span style="color:#66d9ef">DEFAULT</span> (CURDATE()),
+</span></span><span style="display:flex;"><span>    FECHA_DEVOLUCION DATE,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">CONSTRAINT</span> FK_PRESTAMOS_LIBROS <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> (ID_LIBRO) 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">REFERENCES</span> LIBROS(ID_LIBRO)
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><h3 id="insertar-datos-de-prueba">Insertar Datos de Prueba</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Autores
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> AUTORES (ID_AUTOR, NOMBRE, NACIONALIDAD, FECHA_NACIMIENTO) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Gabriel García Márquez&#39;</span>, <span style="color:#e6db74">&#39;Colombiana&#39;</span>, <span style="color:#e6db74">&#39;1927-03-06&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;J.K. Rowling&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, <span style="color:#e6db74">&#39;1965-07-31&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Isaac Asimov&#39;</span>, <span style="color:#e6db74">&#39;Estadounidense&#39;</span>, <span style="color:#e6db74">&#39;1920-01-02&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Jane Austen&#39;</span>, <span style="color:#e6db74">&#39;Británica&#39;</span>, <span style="color:#e6db74">&#39;1775-12-16&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Libros
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> LIBROS (ID_LIBRO, TITULO, ID_AUTOR, ANO_PUBLICACION, GENERO) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Cien Años de Soledad&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1967</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;Harry Potter y la Piedra Filosofal&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1997</span>, <span style="color:#e6db74">&#39;Fantasía&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Fundación&#39;</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1951</span>, <span style="color:#e6db74">&#39;Ciencia Ficción&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Orgullo y Prejuicio&#39;</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1813</span>, <span style="color:#e6db74">&#39;Novela Romántica&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;El Amor en los Tiempos del Cólera&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1985</span>, <span style="color:#e6db74">&#39;Realismo Mágico&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Préstamos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> PRESTAMOS (ID_PRESTAMO, ID_LIBRO, NOMBRE_USUARIO, FECHA_PRESTAMO, FECHA_DEVOLUCION) <span style="color:#66d9ef">VALUES</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;Juan Pérez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-01&#39;</span>, <span style="color:#e6db74">&#39;2025-09-15&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;María López&#39;</span>, <span style="color:#e6db74">&#39;2025-09-05&#39;</span>, <span style="color:#66d9ef">NULL</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;Carlos Ramírez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-10&#39;</span>, <span style="color:#e6db74">&#39;2025-09-20&#39;</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;Ana Gómez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-12&#39;</span>, <span style="color:#66d9ef">NULL</span>),
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;Luis Martínez&#39;</span>, <span style="color:#e6db74">&#39;2025-09-15&#39;</span>, <span style="color:#e6db74">&#39;2025-09-25&#39;</span>);
+</span></span></code></pre></div><h3 id="consultas-de-verificación">Consultas de Verificación</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> AUTORES;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> LIBROS;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> PRESTAMOS;
+</span></span></code></pre></div><h3 id="consultas-avanzadas">Consultas Avanzadas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Libros con información del autor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> L.TITULO, A.NOMBRE <span style="color:#66d9ef">AS</span> AUTOR, L.ANO_PUBLICACION, L.GENERO
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> LIBROS L
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">JOIN</span> AUTORES A <span style="color:#66d9ef">ON</span> L.ID_AUTOR <span style="color:#f92672">=</span> A.ID_AUTOR;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Préstamos activos (no devueltos)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> P.NOMBRE_USUARIO, L.TITULO, P.FECHA_PRESTAMO
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> PRESTAMOS P
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">JOIN</span> LIBROS L <span style="color:#66d9ef">ON</span> P.ID_LIBRO <span style="color:#f92672">=</span> L.ID_LIBRO
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> P.FECHA_DEVOLUCION <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NULL</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Cantidad de libros por género
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> GENERO, <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">AS</span> CANTIDAD
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> LIBROS
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> GENERO
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> CANTIDAD <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h2 id="gestión-de-usuarios-y-privilegios">Gestión de Usuarios y Privilegios</h2>
+<h3 id="crear-usuario-con-permisos-limitados">Crear Usuario con Permisos Limitados</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Usuario solo con permisos de lectura
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;lector&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;password&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">ON</span> biblioteca.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;lector&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Usuario con permisos de lectura y escritura
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;editor&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED <span style="color:#66d9ef">BY</span> <span style="color:#e6db74">&#39;password&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GRANT</span> <span style="color:#66d9ef">SELECT</span>, <span style="color:#66d9ef">INSERT</span>, <span style="color:#66d9ef">UPDATE</span>, <span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">ON</span> biblioteca.<span style="color:#f92672">*</span> <span style="color:#66d9ef">TO</span> <span style="color:#e6db74">&#39;editor&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FLUSH <span style="color:#66d9ef">PRIVILEGES</span>;
+</span></span></code></pre></div><h3 id="ver-usuarios-existentes">Ver Usuarios Existentes</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">User</span>, <span style="color:#66d9ef">Host</span> <span style="color:#66d9ef">FROM</span> mysql.<span style="color:#66d9ef">user</span>;
+</span></span></code></pre></div><h3 id="ver-privilegios-de-un-usuario">Ver Privilegios de un Usuario</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> GRANTS <span style="color:#66d9ef">FOR</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span></code></pre></div><h3 id="revocar-privilegios">Revocar Privilegios</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">REVOKE</span> <span style="color:#66d9ef">ALL</span> <span style="color:#66d9ef">PRIVILEGES</span> <span style="color:#66d9ef">ON</span> <span style="color:#f92672">*</span>.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span>FLUSH <span style="color:#66d9ef">PRIVILEGES</span>;
+</span></span></code></pre></div><h3 id="eliminar-usuario">Eliminar Usuario</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span></code></pre></div><h2 id="copias-de-seguridad">Copias de Seguridad</h2>
+<h3 id="exportar-base-de-datos">Exportar Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mysqldump -u usuario -p biblioteca &gt; biblioteca_backup.sql
+</span></span></code></pre></div><p>Exportar todas las bases de datos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mysqldump -u root -p --all-databases &gt; todas_backup.sql
+</span></span></code></pre></div><h3 id="importar-base-de-datos">Importar Base de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mysql -u usuario -p biblioteca &lt; biblioteca_backup.sql
+</span></span></code></pre></div><h2 id="optimización-y-mantenimiento">Optimización y Mantenimiento</h2>
+<h3 id="verificar-tablas">Verificar Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CHECK</span> <span style="color:#66d9ef">TABLE</span> AUTORES, LIBROS, PRESTAMOS;
+</span></span></code></pre></div><h3 id="optimizar-tablas">Optimizar Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>OPTIMIZE <span style="color:#66d9ef">TABLE</span> AUTORES, LIBROS, PRESTAMOS;
+</span></span></code></pre></div><h3 id="analizar-tablas">Analizar Tablas</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">ANALYZE</span> <span style="color:#66d9ef">TABLE</span> AUTORES, LIBROS, PRESTAMOS;
+</span></span></code></pre></div><h3 id="ver-tamaño-de-las-bases-de-datos">Ver Tamaño de las Bases de Datos</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>    table_schema <span style="color:#66d9ef">AS</span> <span style="color:#e6db74">&#39;Base de Datos&#39;</span>,
+</span></span><span style="display:flex;"><span>    ROUND(<span style="color:#66d9ef">SUM</span>(data_length <span style="color:#f92672">+</span> index_length) <span style="color:#f92672">/</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">1024</span>, <span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">AS</span> <span style="color:#e6db74">&#39;Tamaño (MB)&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> information_schema.tables
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> table_schema;
+</span></span></code></pre></div><h2 id="configuración-del-firewall">Configuración del Firewall</h2>
+<p>Si usas UFW (Uncomplicated Firewall):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ufw allow 3306/tcp
+</span></span></code></pre></div><p>Para permitir solo desde una IP específica:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ufw allow from 192.168.1.100 to any port <span style="color:#ae81ff">3306</span>
+</span></span></code></pre></div><h2 id="solución-de-problemas-comunes">Solución de Problemas Comunes</h2>
+<h3 id="no-puedo-conectar-remotamente">No Puedo Conectar Remotamente</h3>
+<ol>
+<li>Verifica que <code>bind-address = 0.0.0.0</code> en <code>50-server.cnf</code></li>
+<li>Reinicia el servicio: <code>sudo systemctl restart mariadb</code></li>
+<li>Verifica el firewall: <code>sudo ufw status</code></li>
+<li>Comprueba que el usuario tiene permisos remotos: <code>'usuario'@'%'</code></li>
+</ol>
+<h3 id="error-access-denied">Error &ldquo;Access Denied&rdquo;</h3>
+<p>Verifica los privilegios del usuario:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> GRANTS <span style="color:#66d9ef">FOR</span> <span style="color:#e6db74">&#39;usuario&#39;</span><span style="color:#f92672">@</span><span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span></code></pre></div><h3 id="olvidé-la-contraseña-de-root">Olvidé la Contraseña de Root</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl stop mariadb
+</span></span><span style="display:flex;"><span>sudo mysqld_safe --skip-grant-tables &amp;
+</span></span><span style="display:flex;"><span>mysql -u root
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>USE mysql;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> <span style="color:#66d9ef">user</span> <span style="color:#66d9ef">SET</span> password<span style="color:#f92672">=</span>PASSWORD(<span style="color:#e6db74">&#39;nueva_contraseña&#39;</span>) <span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">User</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;root&#39;</span>;
+</span></span><span style="display:flex;"><span>FLUSH <span style="color:#66d9ef">PRIVILEGES</span>;
+</span></span><span style="display:flex;"><span>EXIT;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl restart mariadb
+</span></span></code></pre></div><h2 id="conclusión">Conclusión</h2>
+<p>MariaDB es una excelente opción como sistema gestor de bases de datos relacionales, especialmente para aplicaciones web y entornos que requieren compatibilidad con MySQL. Su facilidad de instalación, configuración sencilla y sólido rendimiento la hacen ideal tanto para desarrollo como para producción.</p>
+</div>
+</article>
+
+  </div>
+  
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Sobre el Blog</h3>
+        <p>Blog sobre tecnología, programación y desarrollo web</p>
+        <p>Creado por <strong>josemaridorado02</strong></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Navegación</h3>
+        
+        <a href="/DoradoWeb-HTML/">Inicio</a>
+        
+        <a href="/DoradoWeb-HTML/posts/">Blog</a>
+        
+        <a href="/DoradoWeb-HTML/about/">Sobre mí</a>
+        
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contacto</h3>
+        <div class="social-links">
+          <a href="https://github.com/josemaridorado02" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="mailto:josemariaoteodorado12@gmail.com">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Mi Blog de Informática. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

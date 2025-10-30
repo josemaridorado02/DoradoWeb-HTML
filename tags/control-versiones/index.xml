@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Control-Versiones on Mi Blog de Informática</title>
+    <link>https://josemaridorado02.github.io/DoradoWeb-HTML/tags/control-versiones/</link>
+    <description>Recent content in Control-Versiones on Mi Blog de Informática</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <lastBuildDate>Mon, 20 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://josemaridorado02.github.io/DoradoWeb-HTML/tags/control-versiones/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Guía Básica de Git para Principiantes</title>
+      <link>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/git-basico/</link>
+      <pubDate>Mon, 20 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://josemaridorado02.github.io/DoradoWeb-HTML/posts/git-basico/</guid>
+      <description>&lt;h2 id=&#34;introducción-a-git&#34;&gt;Introducción a Git&lt;/h2&gt;&#xA;&lt;p&gt;Git es un sistema de control de versiones distribuido que permite gestionar y rastrear cambios en proyectos de desarrollo de software. Es una herramienta fundamental para cualquier programador.&lt;/p&gt;&#xA;&lt;h2 id=&#34;conceptos-básicos&#34;&gt;Conceptos Básicos&lt;/h2&gt;&#xA;&lt;h3 id=&#34;qué-es-un-repositorio&#34;&gt;¿Qué es un repositorio?&lt;/h3&gt;&#xA;&lt;p&gt;Un repositorio es el lugar donde Git almacena todos los archivos y el historial completo de cambios de un proyecto. Puede ser local (en tu ordenador) o remoto (en servicios como GitHub o GitLab).&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
